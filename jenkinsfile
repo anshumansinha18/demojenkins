@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+    environment {
+        name = "anshuman"
+    }
+    parameters {
+        string(name: 'person', defaultValue: 'Anshuman Sinha', description: 'Who Are you?')
+        booleanParam(name: 'isMale', defaultValue: true, description: "")
+        choice(name: 'City', choices: ['Jaipur', 'Mumbai', 'Pune'], description: '')
+    }
+    stages {
+        stage('Run a command') {
+            steps {
+                sh '''
+                 date
+                 ls
+                 pwd
+                '''
+            }
+        }
+        stage('Environment Variables') {
+            environment {
+                username = "anshuman2"
+            }
+            steps {
+               sh 'echo "${name}"'
+               sh 'echo "${person}"'
+            }
+        }
+        stage('Continue ?') {
+            input {
+                message 'Should we continue?'
+                ok "Yes, we should"
+            }
+            steps {
+                echo 'Deployment on TEST ENVIRONMENT'
+            }
+        }
+        stage('Deploy on Production') {
+            steps {
+                echo2 'DEPLOYMENT ON PROD ENVIRONMENT'
+            }
+        }
+    }
+    post {
+        always {
+            echo "I will always say Hello again!"
+        }
+        failure {
+            echo "failure"
+        }
+        success {
+            echo "success"
+        }
+    }
+}
